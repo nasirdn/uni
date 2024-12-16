@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CB</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Курсы валют</h1>
+    <h2>Client_id: <span id="clientId">Загрузка...</span></h2>
+    <h2>Выбор валюты</h2>
+    <select id="currencySelect">
+        <option value="AUD">AUD - Австралийский доллар</option>
+        <option value="AZN">AZN - Азербайджанский манат</option>
+        <option value="GBP">GBP - Фунт стерлингов Соединенного королевства</option>
+        <option value="BGN">BGN - Болгарский лев</option>
+        <option value="BRL">BRL - Бразильский реал</option>
+        <option value="HUF">HUF - Венгерских форинтов</option>
+        <option value="VND">VND - Вьетнамских донгов</option>
+        <option value="HKD">HKD - Гонконгский доллар</option>
+        <option value="GEL">GEL - Грузинский лари</option>
+        <option value="DKK">DKK - Датская крона</option>
+        <option value="AED">AED - Дирхам ОАЭ</option>
+        <option value="USD">USD - Доллар США</option>
+        <option value="EUR">EUR - Евро</option>
+        <option value="EGP">EGP - Египетских фунтов</option>
+        <option value="INR">INR - Индийских рупий</option>
+        <option value="IDR">IDR - Индонезийских рупий</option>
+        <option value="KZT">KZT - Казахстанских тенге</option>
+        <option value="CAD">CAD - Канадский доллар</option>
+
+    </select>
+    <button onclick="selectCurrency()">Выбор</button>
+
+    <h2><div id="currencyRate">Валюта не вырбрана</div></h2>
+
+
+    <script>
+    const socket = io(); // Инициализация соединения с сервером WebSocket
+
+    socket.on('connected', (data) => {
+            // Обрабатывает событие подключения клиента
+        console.log(`Клиент ${data.id} подключился`); // Логирование идентификатора клиента
+        document.getElementById('clientId').innerText = data.id; // Отображение идентификатора клиента на странице
+    });
+
+    function selectCurrency() {
+            // Обрабатывает выбор валюты пользователем
+        const currencyCode = document.getElementById('currencySelect').value; // Получение выбранного кода валюты
+        socket.emit('select_currency', { currency_code: currencyCode }); // Отправка кода валюты на сервер
+    }
+
+    socket.on('update', (data) => {
+            // Обрабатывает обновление курса валюты от сервера
+        const { currency_code, current_rate, previous_rate } = data; // Деструктуризация данных
+        let displayText = `Курс ${currency_code}: ${current_rate}`; // Формирование текста для отображения текущего курса
+        if (previous_rate !== null) {
+            displayText += ` (предыдущий: ${previous_rate})`; // Добавление предыдущего курса, если он доступен
+        }
+        document.getElementById('currencyRate').innerText = displayText; // Обновление текста на странице
+    });
+
+    socket.on('currency_selected', (data) => {
+            // Обрабатывает событие выбора валюты
+        console.log(data.message); // Логирование сообщения о выборе валюты
+        document.getElementById('currencyRate').innerText = `Обновление курса - ${data.message.split(' ')[2]}`; // Обновление текста на странице
+    });
+    </script>
+</body>
+</html>
