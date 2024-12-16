@@ -13,6 +13,6 @@ setup(
     description='Приложение для получения данных о погоде с Openweather API',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url='',
+    url='https://github.com/nasirdn/prog/tree/main/sem5/lr3',
     pyton_requires='>=3.6'
 )
