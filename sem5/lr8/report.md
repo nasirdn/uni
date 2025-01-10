@@ -11,4 +11,4 @@
 [Выполнение лабораторной работы](https://colab.research.google.com/drive/1REtRf6PeUmVLWOt2s35wSOpNVGT3NZpI?usp=sharing)
 
 Результат:  
-![](image_report/pic1.jpg)
+![](pic1.jpg)
