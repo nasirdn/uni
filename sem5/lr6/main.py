@@ -187,19 +187,19 @@ if __name__ == '__main__':
         print(result)'''
 
     # к базовой версии и получить данные в формате JSON
-        json_rates = ConcreteDecoratorJSON(currency_rates)
-        '''json_result = json_rates.get_rates(["R01035", "R01020A", "R01700J"]) # R01035
-        print(json_result)
+        '''json_rates = ConcreteDecoratorJSON(currency_rates)
+        json_result = json_rates.get_rates(["R01035", "R01020A", "R01700J"]) # R01035
+        print(json_result)'''
 
     # к базовой версии и получить данные в формате CSV
         csv_rates = ConcreteDecoratorCSV(currency_rates)
-        csv_result = csv_rates.get_rates(["R01035", "R01020A", "R01700J"]) # R01035
-        print(csv_result)'''
+        csv_result = csv_rates.get_rates(["R01035", "R01020A"]) # R01035
+        print(csv_result)
 
     # к другому декоратору и получить данные в формате CSV
-        json_csv_rates = ConcreteDecoratorCSV(json_rates)
+        """json_csv_rates = ConcreteDecoratorCSV(json_rates)
         json_csv_result = json_csv_rates.get_rates(["R0103jnh5", "R01020A", "R01700J"]) # R01035
-        print(json_csv_result)
+        print(json_csv_result)"""
 
         currency_rates.visual_rates()
 
