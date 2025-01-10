@@ -121,6 +121,6 @@ class CurrencyRates(metaclass=SingletonMeta):
 
 if __name__ == '__main__':
     currency_rates = CurrencyRates()
-    result = currency_rates.get_rates(["R01035", "R01020A", "R01700J"]) #R01035
+    result = currency_rates.get_rates(["R01035111", "R01020A", "R01700J"]) #R01035
     print(result)
     currency_rates.visual_rates()
