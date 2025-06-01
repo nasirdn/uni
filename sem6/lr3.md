@@ -1,1 +1,1 @@
-[](https://colab.research.google.com/drive/1M2Tz9bjr64UeyZbBadjCJqp4IEIYMEbK?usp=drive_link)
+[ЛР 3](https://colab.research.google.com/drive/1M2Tz9bjr64UeyZbBadjCJqp4IEIYMEbK?usp=drive_link)
