@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  pingpong1:
+    build: .
+    ports:
+      - "5001:5000"
+    environment:
+      - PORT=5000
+      - PONG_RESPONSE=Pong1
+    restart: always
+
+  pingpong2:
+    build: .
+    ports:
+      - "5002:5000"
+    environment:
+      - PORT=5000
+      - PONG_RESPONSE=Pong2
+    restart: always
+
+  pingpong3:
+    build: .
+    ports:
+      - "5003:5000"
+    environment:
+      - PORT=5000
+      - PONG_RESPONSE=Pong3
+    restart: always
