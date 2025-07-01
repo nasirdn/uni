@@ -8,11 +8,11 @@
 ![](image_report/2.jpg) 
 ![](image_report/3.jpg) 
 
-3. Создаем docker-compose.yml 
+3. Создаем docker-compose.yml  
 ![](image_report/4.jpg) 
 
-[docker-compose.yml](docker-compose.yml)
-4. Создаем папки 
+[docker-compose.yml](docker-compose.yml)  
+4. Создаем папки  
 ![](/image_report/5.jpg) 
 
 5. Поднимаем контейнер
