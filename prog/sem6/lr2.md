@@ -1,0 +1,1 @@
+[ЛР 2](https://colab.research.google.com/drive/1ppFub_gSwLZC8VPTvTt9p7tIDEHrZ4dw?usp=drive_link)
