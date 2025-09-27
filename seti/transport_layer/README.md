@@ -5,10 +5,10 @@
 ![](image_report/pic1.png)
 
 Просканировать порты хоста (официальный сайт Audi) помощью утилиты nmap.    
-![](image_report/pic1.png)
+![](image_report/pic2.png)
 
 Просканировать порты хоста (сайт f1report – новости Формулы 1) помощью утилиты nmap.    
-![](image_report/pic1.png)
+![](image_report/pic3.png)
 
 | Порт | Сервис     |
 |------|------------|
