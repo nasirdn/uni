@@ -5,7 +5,7 @@
 ![](image_report/pic1.png)
 
 Запрос к узлу 192.168.88.44  
-![](image_report/pic1.png)
+![](image_report/pic2.png)
 
 Физический адрес ущла, к которому был сделан запрос.  
-![](image_report/pic1.png)
+![](image_report/pic3.png)
