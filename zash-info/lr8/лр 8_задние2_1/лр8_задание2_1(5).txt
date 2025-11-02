@@ -1,0 +1,101 @@
+> # ЛР08, задание 2.1(5) Атака с малой экспонентой.
+> # Закаблукова Анастасия, 3 курс, ИВТ-1.1
+> restart;
+> with(numtheory):
+> with(RandomTools):
+> 
+> # Алиса хочет отправить сообщение m Бобу три раза. 
+> # Алиса выбрала в качестве открытого ключа e малое число.
+> 
+> print("Пусть e = ");
+> e:= 3;
+> 
+> # Модуль n1 для отправки сообщения m в первый раз.  
+> q1 := nextprime(Generate(integer(range=3..10^5))):
+> q2 := nextprime(Generate(integer(range=3..10^5))):
+> n1 := q1*q2:
+> 
+> while igcd(e, phi(n1)) <> 1 do
+>     q1 := nextprime(Generate(integer(range=3..10^5)));
+>     q2 := nextprime(Generate(integer(range=3..10^5)));
+>     n1 := q1*q2;
+> end do:
+> print("q1 = ", q1, "q2 = ", q2);
+> print("n1 = ", n1);
+> 
+> # Модуль n2 для отправки сообщения m в второй раз.
+> p1 := nextprime(Generate(integer(range=3..10^5))):
+> p2 := nextprime(Generate(integer(range=3..10^5))):
+> n2 := p1*p2:
+> 
+> while igcd(e, phi(n2)) <> 1 do
+>     p1 := nextprime(Generate(integer(range=3..10^5)));
+>     p2 := nextprime(Generate(integer(range=3..10^5)));
+>     n2 := p1*p2;
+> end do:
+> print("p1 = ", p1, "p2 = ", p2);
+> print("n2 = ", n2);
+> 
+> # Модуль n3 для отправки сообщения m в третий раз.
+> p := nextprime(Generate(integer(range=3..10^5))):
+> q := nextprime(Generate(integer(range=3..10^5))):
+> n3 := p*q:
+> 
+> while igcd(e, phi(n3)) <> 1 do
+>     p := nextprime(Generate(integer(range=3..10^5)));
+>     q := nextprime(Generate(integer(range=3..10^5)));
+>     n3 := p*q;
+> end do:
+> print("p = ", p, "q = ", q);
+> print("n3 = ", n3);
+> 
+> print("Контроль. Взаимнопростые модули.");
+> igcd(n1,n2); igcd(n1,n3); igcd(n2,n3);
+> 
+> print("Контроль. Взаимнопростые: открытый ключ и функция Эйлера от n1, n2, n3.");
+> igcd(e, phi(n1)); igcd(e, phi(n2)); igcd(e, phi(n3));
+> 
+> m := 1234567;
+> 
+> y1 := m &^ e mod n1;
+> y2 := m &^ e mod n2;
+> y3 := m &^ e mod n3;
+> 
+> # ******************************************************
+> # Ева знает открытые ключи (e, n1), (e, n2), (e, n3) и 
+> # перехваченные сообщения y1, y2, y3.
+> 
+> # m1 := chrem([y1, y2, y3], [n1, n2, n3]);
+> 
+> m1 := y1*(n2*n3)*((n2*n3) &^ (-1) mod n1) + y2*(n1*n3)*((n1*n3) &^ (-1) mod n2) + y3*(n1*n2)*((n1*n2) &^ (-1) mod n3) mod (n1*n2*n3);
+
+> m2 := root(m1, e);
+> 
+> print("Контроль:", m2-m);
+> 
+> 
+                          "Пусть e = "
+                               3
+                 "q1 = ", 19391, "q2 = ", 2351
+                       "n1 = ", 45588241
+                 "p1 = ", 26729, "p2 = ", 42557
+                      "n2 = ", 1137506053
+                  "p = ", 28019, "q = ", 96281
+                      "n3 = ", 2697697339
+               "Контроль. Взаимнопростые модули."
+                               1
+                               1
+                               1
+ "Контроль. Взаимнопростые: открытый ключ и функция Эйлера от 
+
+    n1, n2, n3."
+                               1
+                               1
+                               1
+                            1234567
+                            11881952
+                            40870145
+                           1585082593
+                      1881672302290562263
+                            1234567
+                         "Контроль:", 0

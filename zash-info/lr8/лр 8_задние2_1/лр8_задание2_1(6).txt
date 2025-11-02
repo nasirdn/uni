@@ -1,0 +1,61 @@
+> # ЛР08, Задание 2.1(6). Атака методом неподвижной точки.
+> # Закаблукова Анастасия, 3 курс, ИВТ-1.1
+> 
+> with(numtheory): 
+> with(RandomTools):
+> 
+> # Алиса хочет отправить сообщение m Бобу.
+> 
+> q1 := nextprime(Generate(integer(range=3..10^3)));
+> q2 := nextprime(Generate(integer(range=3..10^3)));
+> 
+> print("n = ");
+> n := q1*q2;
+> 
+> e := Generate(integer(range=3..10^3)):
+> while igcd(e, phi(n)) <> 1 do
+>     e := Generate(integer(range=3..10^3)):
+> end do:
+> print("e = ", e);
+> igcd(e, phi(n));
+> 
+> print("m = ");
+> m := 12345;
+> 
+> print("c = ");
+> c:= m &^ e mod n;
+> 
+> # ******************************************************
+> 
+> # Ева знает открытый ключ (e, N) и перехваченное
+> # сообщение c.
+> 
+> c_e := c &^ e mod n;
+> 
+> for k from 1 to n-1 do
+>    c1 := c_e &^ k;
+>    if (c mod n = c1 mod n) then
+>        break;
+>    end if:
+> end do:
+> 
+> print("k =", k);
+> print(c mod n); print((c &^ e) &^ k mod n);
+> 
+> m2 := c &^ k mod n;
+                              293
+                              359
+                             "n = "
+                             105187
+                           "e = ", 19
+                               1
+                             "m = "
+                             12345
+                             "c = "
+                             63251
+                             50918
+                          "k =", 2751
+                             63251
+                             63251
+                             12345
+

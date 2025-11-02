@@ -1,0 +1,48 @@
+> # ЛР08, задание 2.1(7) Атака на короткий открытый текст.
+> # Закаблукова Анастасия, 3 курс, ИВТ-1.1
+> 
+> with(numtheory): 
+> with(RandomTools):
+> 
+> # Алиса хочет отправить сообщение m Бобу.
+> 
+> q1 := nextprime(Generate(integer(range=3..10^5)));
+> q2 := nextprime(Generate(integer(range=3..10^5)));
+> 
+> print("n = ");
+> n := q1*q2;
+> 
+> e := Generate(integer(range=3..10^3)):
+> while igcd(e, phi(n)) <> 1 do
+>     e := Generate(integer(range=3..10^3)):
+> end do:
+> print("e = ", e);
+> igcd(e, phi(n));
+> 
+> print("m = ");
+> m := 1234;
+> 
+> print("с = ");
+> c:= m &^ e mod n;
+> 
+> # ******************************************************
+> 
+> # Ева знает открытый ключ (e, N) и перехваченное 
+> # сообщение с.
+> 
+> for x from 1 to 10^9 do
+>     for y from 1 to 10^9 do
+>         U := (c * (x &^ (-e))) mod n;
+>         V := y &^ e mod n;
+>         if U = V then
+>             break;
+>         end if;
+>     end do:
+> end do:
+> 
+> 
+> 
+> U := U; V:=V;
+> m2 := x*y;
+> 
+> print("Контроль:", m2-m);
