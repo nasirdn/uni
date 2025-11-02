@@ -1,0 +1,47 @@
+> #  ЛР04, задание 2.1(1) Реализовать протокол электронной подписи RSA без секретной передачи сообщения (с хэшированием).
+> # Закаблукова Анастасия, 3 курс, ИВТ-1.1
+> #
+> with(numtheory):
+> with(RandomTools):
+> #
+> hash := (x) -> x mod 14:
+> #
+> p := nextprime(Generate(integer(range = 3 .. 10^10))); 
+> q := nextprime(Generate(integer(range = 3 .. 10^10)));
+> #
+> N := p*q; 
+> phi_N := (p-1)*(q-1); 
+> #
+> d1 := Generate(integer(range = 3 .. 10^15)): 
+> while igcd(d1, phi_N) <> 1 do 
+>     d1 := Generate(integer(range = 3 .. 10^15)): 
+> end do: 
+> d1 := d1; 
+> igcd(d1, phi_N);
+> #
+> e := d1&^(phi(phi_N)-1) mod phi_N;
+> # e:='e':t:= msolve(d1*e=1,phi(N)): assign(t); e:= e;
+> #
+> x := 12345;
+> #
+> s := hash(x)&^d1 mod N;
+> x1 := s&^e mod N;
+> #
+> print("Check: ", hash(x) - x1);
+> 
+                           581869333
+                           4161255407
+                      2421306908113733531
+                      2421306903370608792
+                        891600835712743
+                               1
+                      1982459634536095831
+                             12345
+                      1907593853909732290
+                               11
+                          "Check: ", 0
+;
+> 
+;
+> 
+;

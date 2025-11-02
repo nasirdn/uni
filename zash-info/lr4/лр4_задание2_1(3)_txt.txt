@@ -1,0 +1,62 @@
+> # ЛР04, задание 2.1(3) Реализовать протокол электронной подписи RSA совместно с секретной передачи сообщения.
+> # Закаблукова Анастасия, 3 курс, ИВТ-1.1
+> #
+> with(numtheory): 
+> with(RandomTools):
+> # 
+> P := nextprime(Generate(integer(range = 3 .. 10^20))); 
+> Q := nextprime(Generate(integer(range = 3 .. 10^20))); 
+> R := P*Q; 
+> #
+> S := Generate(integer(range = 3 .. 10^15)):
+> while igcd(S, phi(R)) <> 1 do 
+>      S := Generate(integer(range = 3 .. 10^15));
+> end do: 
+> S := S; 
+> igcd(S, phi(R));
+> #
+> T := S&^(phi(phi(R))-1) mod phi(R);
+> #
+> p := nextprime(Generate(integer(range = 3 .. 10^20))); 
+> q := nextprime(Generate(integer(range = 3 .. 10^20))); 
+> r := p*q;  
+> #
+> s := Generate(integer(range = 3 .. 10^15)):
+> while igcd(s, phi(r)) <> 1 do 
+>      s := Generate(integer(range = 3 .. 10^15));
+> end do: 
+> s := s; 
+> igcd(s, phi(r));
+> #
+> t := s&^(phi(phi(r))-1) mod phi(r);
+> #
+> m:= 12345678901;
+> #
+> if r < R
+>    then m1 :=m&^t mod r; m2:= m1&^S mod R; m3:= m2&^T mod R; m4:=m3&^s mod r;
+>    else m1 :=m&^S mod R; m2:= m1&^t mod r; m3:= m2&^s mod r; m4:=m3&^T mod R;
+> end if;
+> #
+> print("Check: ", m4-m);
+> 
+                      76286085921364900649
+                      20789237297151719413
+            1585929542690159881894947352638269599037
+                        642106169516363
+                               1
+            1012209123267147595432878687454129578563
+                      23410105024546895023
+                      78671287232217305387
+            1841703096522502330940254053858621388901
+                        114883667899325
+                               1
+             31640703249175361670918113485410093605
+                          12345678901
+            1470086808158455537926665769571332727211
+            1357555358880104520030898809348584186909
+            1470086808158455537926665769571332727211
+                          12345678901
+                          "Check: ", 0
+;
+> 
+;
