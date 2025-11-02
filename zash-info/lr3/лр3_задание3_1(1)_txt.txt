@@ -1,0 +1,44 @@
+> # ЛР 03,  Задание 3.1 (1) Реализовать криптографической системы с открытым ключом.
+> # Закаблукова Анастасия, 3 курс, ИВТ-1.1
+> with(numtheory):
+> with(RandomTools):
+> #
+> p1:= nextprime(Generate(integer(range=3..10^10)));
+> p2:= nextprime(Generate(integer(range=3..10^10)));
+> #
+> M := p1*p2;
+> #
+> d1:= Generate(integer(range=3..10^15)):
+> #
+> while igcd(d1, phi(M)) <> 1 do
+>     d1 := Generate(integer(range=3..10^15)):
+> end do:
+> #
+> d1:= d1;
+> #
+> igcd(d1, phi(M));
+> #
+> e:= d1 &^ (phi(phi(M))-1) mod (phi(M));
+> #
+> m:= 123456789 mod M;
+> #
+> m1:= m &^ e mod M;
+> m2:= m1 &^ d1 mod M;
+> #
+> print("Check: ", m-m2);
+> 
+> 
+> 
+                           581869333
+                           4161255407
+                      2421306908113733531
+                        891600835712743
+                               1
+                      1982459634536095831
+                           123456789
+                      2199340380702207007
+                           123456789
+                          "Check: ", 0
+;
+> 
+;

@@ -1,0 +1,52 @@
+> # ЛР 03, задание 3.1(2) Реализовать протокол криптографической системы без передачи ключей.
+> # Закаблукова Анастасия, 3 курс, ИВТ-1.1
+> #
+> with(numtheory):
+> with(RandomTools):
+> #
+> p:= nextprime(Generate(integer(range=3..10^15)));
+> #
+> a:= Generate(integer(range=3..10^5)):
+> while igcd(a, p-1) <> 1 do
+>     a:= Generate(integer(range=3..10^5));
+> end do:
+> a:=a;
+> igcd(a, p-1);
+> #
+> alpha := a &^ (phi(phi(p))-1) mod phi(p);
+> #
+> b := Generate(integer(range=3..10^5)):
+> while igcd(b, p-1) <> 1 do
+>     b:= Generate(integer(range=3..10^5));
+> end do:
+> b:=b;
+> igcd(b, p-1);
+> #
+> beta := b &^ (phi(phi(p))-1) mod phi(p);
+> #
+> m := 123456789012;
+> #
+> m1:= m &^ a mod p;
+> m2 := m1 &^ b mod p;
+> #
+> m3 := m2 &^ alpha mod p;
+> m4 := m3 &^ beta mod p;
+> #
+> print("Check:", m4-m);
+> 
+                        826119640767233
+                             77407
+                               1
+                         53009886130335
+                             43487
+                               1
+                        424771429796383
+                          123456789012
+                        575947111311462
+                        140943552391789
+                        720834836778583
+                          123456789012
+                          "Check:", 0
+;
+> 
+;

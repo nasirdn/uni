@@ -1,0 +1,49 @@
+> # ЛР03, задание 3.4 Реализовать протокол Рабина.
+> #Закаблукова Анастасия, 3 курс, ИВТ-1.1
+> #
+> with(RandomTools):
+> #
+> p := nextprime(Generate(integer(range = 10^3 .. 10^5))):
+> while p mod 4 <> 3 do
+>    p := nextprime(Generate(integer(range = 10^3 .. 10^5)));
+> end do:
+> p := p;
+> #
+> q := nextprime(Generate(integer(range = 10^3 .. 10^5))):
+> while q mod 4 <> 3 do
+>    q := nextprime(Generate(integer(range = 10^3 .. 10^5)));
+> end do:
+> q := q;
+> #
+> n := p*q;
+> #
+> m := 35;
+> #
+> c := (m*m) mod n;
+> #
+> a1 := c&^((p+1)/4) mod p;
+> a2 := (p-c&^((p+1)/4)) mod p;
+> b1 := c&^((q+1)/4) mod q;
+> b2 := (q-c&^((q+1)/4)) mod q;
+> #
+> x1:= chrem([a1, b1], [p, q]);
+> x2:= chrem([a1, b2], [p, q]);
+> x3:= chrem([a2, b1], [p, q]);
+> x4:= chrem([a2, b2], [p, q]);
+> 
+                             41719
+                              3359
+                           140134121
+                               35
+                              1225
+                               35
+                             41684
+                               35
+                              3324
+                               35
+                            63162601
+                            76971520
+                           140134086
+;
+> 
+;
