@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Polls - Polls App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .search-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .results-container {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .poll-item {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .poll-item:hover {
+            background-color: #f8f9fa;
+        }
+        .poll-item.active {
+            background-color: #e3f2fd;
+            border-left: 4px solid #0d6efd;
+        }
+        .chart-container {
+            text-align: center;
+        }
+        .statistics-card {
+            position: sticky;
+            top: 20px;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    {% include 'polls/navbar.html' %}
+
+    <div class="container mt-4 search-container">
+        <h1 class="text-center mb-4">Search and Analyze Polls</h1>
+
+        <!-- Форма поиска -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form id="searchForm">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="searchQuery" class="form-label">Search Text</label>
+                            <input type="text" class="form-control" id="searchQuery" placeholder="Enter poll question...">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="dateFrom" class="form-label">From Date</label>
+                            <input type="date" class="form-control" id="dateFrom">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="dateTo" class="form-label">To Date</label>
+                            <input type="date" class="form-control" id="dateTo">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="sortBy" class="form-label">Sort By</label>
+                            <select class="form-select" id="sortBy">
+                                <option value="pub_date">Date</option>
+                                <option value="popularity">Popularity</option>
+                                <option value="votes">Votes Count</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading data...</p>
+        </div>
+
+        <div class="row" id="resultsSection" style="display: none;">
+            <!-- Список результатов -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Search Results</h5>
+                    </div>
+                    <div class="card-body results-container">
+                        <div id="resultsList"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Статистика -->
+            <div class="col-md-6">
+                <div class="card statistics-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Poll Statistics</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="statisticsContent">
+                            <p class="text-muted">Select a poll to view statistics</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentSelectedPoll = null;
+
+        // Обработка формы поиска
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            searchPolls();
+        });
+
+        function searchPolls() {
+            const query = document.getElementById('searchQuery').value;
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            const sortBy = document.getElementById('sortBy').value;
+
+            showLoading(true);
+
+            // Создание URL с параметрами
+            let url = `/api/questions/search/?sort_by=${sortBy}`;
+            if (query) url += `&q=${encodeURIComponent(query)}`;
+            if (dateFrom) url += `&date_from=${dateFrom}`;
+            if (dateTo) url += `&date_to=${dateTo}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    displayResults(data);
+                    showLoading(false);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showLoading(false);
+                });
+        }
+
+        function displayResults(polls) {
+            const resultsList = document.getElementById('resultsList');
+            const resultsSection = document.getElementById('resultsSection');
+
+            if (polls.length === 0) {
+                resultsList.innerHTML = '<p class="text-muted">No polls found</p>';
+            } else {
+                resultsList.innerHTML = polls.map(poll => `
+                    <div class="poll-item p-3 border-bottom ${currentSelectedPoll === poll.id ? 'active' : ''}"
+                         onclick="selectPoll(${poll.id})">
+                        <h6>${poll.question_text}</h6>
+                        <small class="text-muted">
+                            Date: ${new Date(poll.pub_date).toLocaleDateString()} |
+                            Votes: ${poll.total_votes || 0}
+                        </small>
+                    </div>
+                `).join('');
+            }
+
+            resultsSection.style.display = 'flex';
+        }
+
+        function selectPoll(pollId) {
+            currentSelectedPoll = pollId;
+
+            // Обновление активного элемента
+            document.querySelectorAll('.poll-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Загрузка статистики
+            loadStatistics(pollId);
+            loadChart(pollId);
+        }
+
+        function loadStatistics(pollId) {
+            fetch(`/api/questions/${pollId}/statistics/`)
+                .then(response => response.json())
+                .then(data => {
+                    displayStatistics(data);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function loadChart(pollId) {
+            fetch(`/api/questions/${pollId}/chart/`)
+                .then(response => response.json())
+                .then(data => {
+                    displayChart(data.chart);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displayStatistics(statistics) {
+            const statsContent = document.getElementById('statisticsContent');
+
+            let choicesHtml = '';
+            if (statistics.choices && statistics.choices.length > 0) {
+                choicesHtml = statistics.choices.map(choice => `
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span>${choice.choice_text}</span>
+                            <span>
+                                <strong>${choice.votes}</strong>
+                                <small class="text-muted">(${choice.percentage.toFixed(1)}%)</small>
+                            </span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar" role="progressbar"
+                                 style="width: ${choice.percentage}%"
+                                 aria-valuenow="${choice.percentage}"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            statsContent.innerHTML = `
+                <h6>${statistics.question_text}</h6>
+                <p><strong>Total Votes:</strong> ${statistics.total_votes}</p>
+                <hr>
+                <h6>Vote Distribution:</h6>
+                ${choicesHtml}
+                <div class="mt-3">
+                    <button class="btn btn-sm btn-outline-primary me-2" onclick="exportToCSV(${statistics.question_id})">
+                        Export CSV
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="exportToJSON(${statistics.question_id})">
+                        Export JSON
+                    </button>
+                </div>
+                <div class="mt-3 chart-container">
+                    <img id="pollChart" src="" alt="Poll chart" style="max-width: 100%; display: none;">
+                </div>
+            `;
+        }
+
+        function displayChart(chartData) {
+            const chartImg = document.getElementById('pollChart');
+            if (chartData) {
+                chartImg.src = chartData;
+                chartImg.style.display = 'block';
+            }
+        }
+
+        function exportToCSV(pollId) {
+            fetch(`/api/questions/${pollId}/export_csv/`)
+                .then(response => response.json())
+                .then(data => {
+                    // Создание и скачивание CSV файла
+                    const blob = new Blob([data.csv_data], { type: 'text/csv' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `poll_${pollId}_results.csv`;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                });
+        }
+
+        function exportToJSON(pollId) {
+            fetch(`/api/questions/${pollId}/export_json/`)
+                .then(response => response.json())
+                .then(data => {
+                    // Создание и скачивание JSON файла
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `poll_${pollId}_results.json`;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                });
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        // Автоматический поиск при загрузке страницы
+        window.addEventListener('load', function() {
+            searchPolls();
+        });
+    </script>
+</body>
+</html>
